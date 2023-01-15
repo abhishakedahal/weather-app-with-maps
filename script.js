@@ -13,15 +13,14 @@ let weather = {
           throw new Error("No weather found.");
         }
         return response.json();
-        
       })
       .then((data) => {
         this.displayWeather(data);
         setMap(data);
-      })
+      });
   },
   displayWeather: function (data) {
-    const {lat,lon}=data.coord;
+    const { lat, lon } = data.coord;
     const { name } = data;
     const { icon, description } = data.weather[0];
     const { temp, humidity } = data.main;
@@ -38,16 +37,13 @@ let weather = {
     document.querySelector(".weather").classList.remove("loading");
     document.body.style.backgroundImage =
       "url('https://source.unsplash.com/1600x900/?" + description + "')";
-      document.querySelector(".latitude").innerText = lat;
-      document.querySelector(".longitude").innerText = lon;
+    document.querySelector(".latitude").innerText = lat;
+    document.querySelector(".longitude").innerText = lon;
   },
 
   search: function () {
     this.fetchWeather(document.querySelector(".search-bar").value);
   },
-
-
-
 };
 
 let geocode = {
@@ -80,7 +76,7 @@ let geocode = {
         // Success!
         var data = JSON.parse(request.responseText);
         weather.fetchWeather(data.results[0].components.city);
-        console.log(data.results[0].components.city)
+        console.log(data.results[0].components.city);
       } else if (request.status <= 500) {
         // We reached our target server, but it returned an error
 
@@ -99,18 +95,16 @@ let geocode = {
 
     request.send(); // make the request
   },
-  getLocation: function() {
-    function success (data) {
+  getLocation: function () {
+    function success(data) {
       geocode.reverseGeocode(data.coords.latitude, data.coords.longitude);
     }
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(success, console.error);
-    }
-    else {
+    } else {
       weather.fetchWeather("Denver");
     }
   },
-
 };
 
 document.querySelector(".search button").addEventListener("click", function () {
@@ -127,20 +121,16 @@ document
 
 geocode.getLocation();
 
+var map = L.map("map");
 
-var map = L.map('map');
-
-function setMap(data){
-  const {lat,lon}=data.coord;
+function setMap(data) {
+  const { lat, lon } = data.coord;
   map.setView([lat, lon], 10);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(map);
-  L.tileLayer('https://tile.openweathermap.org/map/precipitation/{z}/{x}/{y}?appid=f17be8a26b585a9de89d16c242f2fffe').addTo(map);
-
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  }).addTo(map);
+  L.tileLayer(
+    "https://tile.openweathermap.org/map/precipitation/{z}/{x}/{y}?appid=f17be8a26b585a9de89d16c242f2fffe"
+  ).addTo(map);
 }
-
-
-  
-
-
